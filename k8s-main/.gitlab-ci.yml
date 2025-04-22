@@ -6,7 +6,7 @@ stages:
   - expose
 
 variables:
-  DOCKER_IMAGE: "kanishka9723/myapp1:latest"
+  DOCKER_IMAGE: "Diva100898/myapp1:latest"
 
 before_script:
   - echo "Starting GitLab CI/CD Pipeline"
@@ -18,7 +18,7 @@ before_script:
 checkout:
   stage: checkout
   script:
-    - git clone https://github.com/kanishka9723/DevOps.git .
+    - git clone https://github.com/Diva004/DevOps.git .
   only:
     - main
 
