@@ -1,0 +1,56 @@
+stages:
+  - checkout
+  - build
+  - push
+  - deploy
+  - expose
+
+variables:
+  DOCKER_IMAGE: "kanishka9723/myapp1:latest"
+
+before_script:
+  - echo "Starting GitLab CI/CD Pipeline"
+  - apt-get update && apt-get install -y docker.io kubectl
+  - docker --version
+  - kubectl version --client
+  - minikube status || minikube start
+
+checkout:
+  stage: checkout
+  script:
+    - git clone https://github.com/kanishka9723/DevOps.git .
+  only:
+    - main
+
+build:
+  stage: build
+  script:
+    - docker build -t $DOCKER_IMAGE .
+
+push:
+  stage: push
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - docker push $DOCKER_IMAGE
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  script:
+    - kubectl apply -f mysql-deploy.yaml
+    - kubectl apply -f deployment.yaml
+    - kubectl apply -f service.yaml
+    - kubectl apply -f mysql-client.yaml
+    - kubectl apply -f mysql-service.yaml
+    - kubectl apply -f node-deploy.yaml
+    - kubectl apply -f node-service.yaml
+  only:
+    - main
+
+expose:
+  stage: expose
+  script:
+    - minikube service node-mysql-service
+  only:
+    - main
