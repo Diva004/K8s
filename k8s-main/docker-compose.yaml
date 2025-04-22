@@ -9,7 +9,7 @@ services:
       - "3307:3306"  
 
   app:
-    image: kanishka9723/myapp
+    image: Diva100898/myapp
     depends_on:
       - mysql
     environment:
